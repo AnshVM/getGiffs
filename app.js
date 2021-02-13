@@ -2,15 +2,15 @@ const express = require("express");
 const app = express();
 const https = require('https');
 const bodyParser = require("body-parser");
-const { on } = require("events");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(__dirname+"/public"));
+app.set('view engine','ejs')
 
 var url = "https://v2.jokeapi.dev/joke";
-console.log("url init: "+url)
+var joke = ""
 
 app.get("/",(req,res)=>{
-    res.sendFile(__dirname+"/index.html");
+    res.render('index',{joke:joke});
 });
 
 app.post("/",(req,res)=>{
