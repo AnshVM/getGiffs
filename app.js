@@ -1,20 +1,21 @@
-const express = require("express");
-const app = express();
-const https = require('https');
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static(__dirname+"/public"));
+const express = require("express")
+const app = express()
+const https = require('https')
+const bodyParser = require("body-parser")
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(express.static(__dirname+"/public"))
 app.set('view engine','ejs')
 
-var url = "https://v2.jokeapi.dev/joke";
+var url = "https://v2.jokeapi.dev/joke"
 var joke = ""
 
 app.get("/",(req,res)=>{
-    res.render('index',{joke:joke});
-});
+    console.log("joke: "+joke)
+    res.render('index.ejs',{joke:joke})
+})
 
 app.post("/",(req,res)=>{
-    url = "https://v2.jokeapi.dev/joke";
+    url = "https://v2.jokeapi.dev/joke"
     const categoryData = (req.body);
     var categoryURL = "/";
     for(x in categoryData){
@@ -38,12 +39,13 @@ app.post("/",(req,res)=>{
         response.on("data",(d)=>{
             const jokeData = JSON.parse(d);
             console.log(jokeData);
-
             if(jokeData.type == 'single'){
-                res.send(jokeData.joke);
+                joke = `Joke: ${jokeData.joke}`
+                res.redirect("/")
             }
             else if(jokeData.type == "twopart"){
-                res.send(jokeData.setup+" "+jokeData.delivery);             
+                joke = `Joke: ${jokeData.setup} ${jokeData.delivery}`
+                res.redirect("/")
             }
 
             else if(jokeData.error == true){
